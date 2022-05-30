@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/content_nav_graph"
+    app:startDestination="@id/aidKitsList">
+
+    <fragment
+        android:id="@+id/aidKitsList"
+        android:name="com.example.apteczka.content.aidkits.KitsListFragment"
+        android:label="@string/label_kits_list_fragment"
+        tools:layout="@layout/fragment_kits_list">
+        <action
+            android:id="@+id/to_aid_kit_details"
+            app:destination="@id/loginFragment" />
+
+    </fragment>
+
+<!--    <argument-->
+<!--        android:name="myArg"-->
+<!--        app:argType="integer"-->
+<!--        android:defaultValue="0" />-->
+
+
+</navigation>

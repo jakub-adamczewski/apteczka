@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/login_nav_graph"
+    app:startDestination="@id/loginPreviewFragment">
+
+    <fragment
+        android:id="@+id/loginPreviewFragment"
+        android:name="com.example.apteczka.auth.preview.LoginPreviewFragment"
+        android:label="@string/label_login_fragment"
+        tools:layout="@layout/fragment_login_preview">
+        <action
+            android:id="@+id/to_content"
+            app:destination="@id/contentActivity" />
+        <action
+            android:id="@+id/to_login"
+            app:destination="@id/loginFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/to_register"
+            app:destination="@id/registerFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.apteczka.auth.login.LoginFragment"
+        android:label="@string/label_login_fragment"
+        tools:layout="@layout/fragment_login">
+        <action
+            android:id="@+id/to_content"
+            app:destination="@id/contentActivity" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/registerFragment"
+        android:name="com.example.apteczka.auth.register.RegisterFragment"
+        android:label="@string/label_register_fragment"
+        tools:layout="@layout/fragment_register">
+        <action
+            android:id="@+id/to_login"
+            app:destination="@id/loginFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
+
+    <activity
+        android:id="@+id/contentActivity"
+        android:name="com.example.apteczka.content.ContentActivity"
+        android:label="@string/label_content_activity"
+        tools:layout="@layout/activity_content" />
+
+</navigation>

@@ -1,3 +1,27 @@
 <resources>
     <string name="app_name">apteczka</string>
+    <string name="preview_header">Apteczka</string>
+    <string name="login_header">Logowanie</string>
+    <string name="register_header">Rejestracja</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="label_login_fragment">LoginFragment</string>
+    <string name="label_login_preview_fragment">LoginPreviewFragment</string>
+    <string name="label_register_fragment">RegisterFragment</string>
+    <string name="label_content_activity">ContentActivity</string>
+    <string name="label_kits_list_fragment">KitListFragment</string>
+    <string name="label_kit_details">KitDetailsFragment</string>
+    <string name="login">Zaloguj się</string>
+    <string name="register">Zarejestruj się</string>
+    <string name="no_account">Nie masz jeszcze konta?</string>
+    <string name="email">Email</string>
+    <string name="password">Hasło</string>
+    <string name="email_hint">Wprowadź email…</string>
+    <string name="password_hint">Wprowadź hasło…</string>
+    <string name="name_hint">Wprowadź imię…</string>
+    <string name="wrong_creds">Nieprawidłowy login lub hasło.</string>
+    <string name="no_kits">Brak apteczek.</string>
+    <string name="add_kit">Dodaj apteczkę.</string>
+    <string name="kits_title">Apteczki</string>
+    <string name="name_dialog_title">Podaj nazwę</string>
 </resources>

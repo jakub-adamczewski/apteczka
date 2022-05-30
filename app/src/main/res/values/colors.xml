@@ -7,4 +7,11 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="red_btn">#8e6e8d</color>
+
+    <color name="validity_green">#aed581</color>
+    <color name="validity_orange">#ef6c00</color>
+    <color name="validity_red">#d84315</color>
+
 </resources>

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "368312272789",
+    "project_id": "apteczka-a61c5",
+    "storage_bucket": "apteczka-a61c5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:368312272789:android:6bae4fd985284d212e189c",
+        "android_client_info": {
+          "package_name": "com.example.apteczka"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "368312272789-5604btk8dushcpuh16kf7proevj5om4i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.apteczka",
+            "certificate_hash": "d36c15076b2eb7e6589e937de13ef41194ada95c"
+          }
+        },
+        {
+          "client_id": "368312272789-4m0pgligk6fpfmrfnd9hlmti243ghtr7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCDbFYfE8o9oZ9qFCpZgGhKqZJPXA7ehOI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "368312272789-4m0pgligk6fpfmrfnd9hlmti243ghtr7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

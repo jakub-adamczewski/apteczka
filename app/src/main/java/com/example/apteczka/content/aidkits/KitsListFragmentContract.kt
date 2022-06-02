@@ -10,7 +10,8 @@ object KitsListFragmentContract {
     )
 
     sealed class Effect {
-        data class NavigateToDetails(val id: String) : Effect()
+        data class NavigateToDetails(val kitName: String) : Effect()
+        data class Error(val cause: Exception) : Effect()
     }
 
     sealed class Intent {
@@ -20,7 +21,7 @@ object KitsListFragmentContract {
 
     val INITIAL_STATE = State(
         items = emptyList(),
-        loading = true
+        loading = false
     )
 
 }

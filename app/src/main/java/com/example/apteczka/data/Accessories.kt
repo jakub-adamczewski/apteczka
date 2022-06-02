@@ -11,7 +11,7 @@ data class PredefinedAccessory(
 )
 
 
-val PREDEFINED_ACCESSORIES: Map<Int, PredefinedAccessory> = listOf(
+val PREDEFINED_ACCESSORIES: List<PredefinedAccessory> = listOf(
     PredefinedAccessory(
         iconRes = R.drawable.instruction,
         requiredQuantity = 1,
@@ -97,8 +97,4 @@ val PREDEFINED_ACCESSORIES: Map<Int, PredefinedAccessory> = listOf(
         requiredQuantity = 1,
         name = "opatrunek indywidualny G"
     ),
-).associateBy {
-    it.hashCode()
-}
-
-val PREDEFINED_ACCESSORIES_IDS: Set<Int> = PREDEFINED_ACCESSORIES.keys
+)

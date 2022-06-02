@@ -16,6 +16,7 @@ import com.example.apteczka.R
 import com.example.apteczka.content.aidkits.list.AidKitsAdapter
 import com.example.apteczka.content.aidkits.list.KitViewHolder
 import com.example.apteczka.databinding.FragmentKitsListBinding
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -80,6 +81,7 @@ class KitsListFragment : Fragment() {
             binding.run {
                 noKitsText.isVisible = state.items.isEmpty()
                 kitsAdapter.submitList(state.items)
+                binding.progress.isVisible = state.loading
             }
         }
     }
@@ -88,7 +90,14 @@ class KitsListFragment : Fragment() {
         viewModel.effect.collect { effect ->
             when (effect) {
                 is KitsListFragmentContract.Effect.NavigateToDetails -> {
-                    findNavController().navigate(R.id.to_aid_kit_details)
+                    findNavController().navigate(KitsListFragmentDirections.toAidKitDetails(effect.kitName))
+                }
+                is KitsListFragmentContract.Effect.Error -> {
+                    Snackbar.make(
+                        requireView(),
+                        "Error: ${effect.cause.message}.",
+                        Snackbar.LENGTH_LONG
+                    ).show()
                 }
             }
         }

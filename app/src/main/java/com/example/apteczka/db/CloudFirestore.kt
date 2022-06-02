@@ -1,21 +1,14 @@
 package com.example.apteczka.db
 
-import android.util.Log
 import com.example.apteczka.auth.api.AuthManager
-import com.example.apteczka.data.PREDEFINED_ACCESSORIES_IDS
+import com.example.apteczka.data.PREDEFINED_ACCESSORIES
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.JsonPrimitive
-import org.json.JSONObject
 import java.time.LocalDate
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -25,59 +18,112 @@ class CloudFirestore @Inject constructor(
 ) {
 
     private val _kitsState: MutableStateFlow<State> = MutableStateFlow(
-        State(kits = emptyList())
+        State(kits = emptyList(), loading = false)
     )
     val kitsState: Flow<State> = _kitsState
 
+    private val _error: MutableSharedFlow<Error> = MutableSharedFlow()
+    val error: Flow<Error> = _error
 
     private val db = FirebaseFirestore.getInstance()
 
-    private val kitsCollectionReference: CollectionReference =
-        db.collection("users")
+    private val kitsCollectionReference: CollectionReference
+        get() = db.collection("users")
             .document(authManager.currentUser!!.uid)
             .collection("kits")
+
+    private fun emitLoading() {
+        _kitsState.value = _kitsState.value.copy(loading = true)
+    }
+
+    private fun emitError(cause: Exception) {
+        _kitsState.value = _kitsState.value.copy(loading = false)
+        _error.tryEmit(Error(cause))
+    }
 
     private fun getKitDocumentReference(kitName: String): DocumentReference =
         kitsCollectionReference.document(kitName)
 
     fun addKit(kitName: String) {
-        getKitDocumentReference(kitName).set(
+        emitLoading()
+        getKitDocumentReference(kitName)
+            .set(
+                Kit(
+                    name = kitName
+                ).toFirestoreKit()
+            )
+            .addOnSuccessListener {
+                emitKits()
+            }
+            .addOnFailureListener {
+                emitError(it)
+            }
+    }
+
+    private fun updateKit(kit: Kit) {
+        emitLoading()
+        getKitDocumentReference(kit.name).set(kit.toFirestoreKit())
+            .addOnSuccessListener {
+                emitKits()
+            }
+            .addOnFailureListener {
+                emitError(it)
+            }
+    }
+
+    fun updateAccessoryDate(kitName: String, accessoryName: String, newDate: LocalDate) {
+        val currentAccessories = _kitsState.value.kits.find { it.name == kitName }!!.accessories
+        val newAccessories = currentAccessories.map {
+            if (PREDEFINED_ACCESSORIES[it.predefinedAccessoryId].name == accessoryName) {
+                it.copy(validityDate = newDate)
+            } else {
+                it
+            }
+        }
+        updateKit(
             Kit(
-                name = kitName
+                name = kitName,
+                accessories = newAccessories
             )
         )
-            .addOnSuccessListener {
-                Log.d("Test__", "success: $it")
-                getKits()
-            }
-            .addOnFailureListener {
-                Log.d("Test__", "failure: $it")
-            }
     }
 
-    fun updateKit(kit: Kit) {
-        getKitDocumentReference(kit.name).set(kit)
-            .addOnSuccessListener {
-                Log.d("Test__", "success: $it")
+    fun updateAccessoryOwnedCount(
+        kitName: String,
+        accessoryName: String,
+        accessoryOwnedCount: Int
+    ) {
+        val currentAccessories = _kitsState.value.kits.find { it.name == kitName }!!.accessories
+        val newAccessories = currentAccessories.map {
+            if (PREDEFINED_ACCESSORIES[it.predefinedAccessoryId].name == accessoryName) {
+                it.copy(ownedQuantity = accessoryOwnedCount)
+            } else {
+                it
             }
-            .addOnFailureListener {
-                Log.d("Test__", "failure: $it")
-            }
+        }
+        updateKit(
+            Kit(
+                name = kitName,
+                accessories = newAccessories
+            )
+        )
     }
 
-    fun getKits() {
+    fun emitKits() {
+        emitLoading()
         kitsCollectionReference.get()
             .addOnSuccessListener { allKitsSnapshot ->
                 _kitsState.value =
                     State(
                         kits = allKitsSnapshot.documents.map {
                             it.toObject(FirestoreKit::class.java)!!.toKit()
-                        }
+                        },
+                        loading = false
                     )
 
             }
             .addOnFailureListener {
-                Log.d("Test__", "failure: $it")
+                emitError(it)
             }
     }
 
@@ -91,18 +137,42 @@ class CloudFirestore @Inject constructor(
 
     private class FirestoreDbAccessory {
         var predefinedAccessoryId: Int = -1
-        var validityDate: LocalDate? = null
+        var validityYear: Int? = null
+        var validityMonth: Int? = null
+        var validityDayOfMonth: Int? = null
         var ownedQuantity: Int = -1
 
         fun toAccessory(): DbAccessory =
-            DbAccessory(predefinedAccessoryId, validityDate, ownedQuantity)
+            DbAccessory(
+                predefinedAccessoryId,
+                if (validityYear != null && validityMonth != null && validityDayOfMonth != null) {
+                    LocalDate.of(validityYear!!, validityMonth!!, validityDayOfMonth!!)
+                } else null,
+                ownedQuantity
+            )
     }
+
+    private fun Kit.toFirestoreKit(): FirestoreKit = FirestoreKit().apply {
+        name = this@toFirestoreKit.name
+        accessories = this@toFirestoreKit.accessories.map {
+            it.toFirestoreAccessory()
+        }
+    }
+
+    private fun DbAccessory.toFirestoreAccessory(): FirestoreDbAccessory =
+        FirestoreDbAccessory().apply {
+            predefinedAccessoryId = this@toFirestoreAccessory.predefinedAccessoryId
+            ownedQuantity = this@toFirestoreAccessory.ownedQuantity
+            validityYear = this@toFirestoreAccessory.validityDate?.year
+            validityMonth = this@toFirestoreAccessory.validityDate?.monthValue
+            validityDayOfMonth = this@toFirestoreAccessory.validityDate?.dayOfMonth
+        }
 
     data class Kit(
         val name: String,
-        val accessories: List<DbAccessory> = PREDEFINED_ACCESSORIES_IDS.map {
+        val accessories: List<DbAccessory> = PREDEFINED_ACCESSORIES.mapIndexed { index, _ ->
             DbAccessory(
-                predefinedAccessoryId = it
+                predefinedAccessoryId = index
             )
         }
     )
@@ -114,7 +184,12 @@ class CloudFirestore @Inject constructor(
     )
 
     data class State(
-        val kits: List<Kit>
+        val kits: List<Kit>,
+        val loading: Boolean
+    )
+
+    data class Error(
+        val cause: Exception
     )
 
 

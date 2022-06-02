@@ -23,5 +23,10 @@
     <string name="no_kits">Brak apteczek.</string>
     <string name="add_kit">Dodaj apteczkę.</string>
     <string name="kits_title">Apteczki</string>
+    <string name="kit_details_title">Zawartość apteczki</string>
     <string name="name_dialog_title">Podaj nazwę</string>
+    <string name="validity_date">Data ważności: %1$s</string>
+    <string name="count_title">Liczba:</string>
+    <string name="required_count">Wymagane: %1$d</string>
+    <string name="owned_count">Posiadane: %1$d</string>
 </resources>

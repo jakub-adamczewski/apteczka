@@ -12,14 +12,24 @@
         tools:layout="@layout/fragment_kits_list">
         <action
             android:id="@+id/to_aid_kit_details"
-            app:destination="@id/loginFragment" />
+            app:destination="@id/kitDetails" />
 
     </fragment>
 
-<!--    <argument-->
-<!--        android:name="myArg"-->
-<!--        app:argType="integer"-->
-<!--        android:defaultValue="0" />-->
+    <fragment
+        android:id="@+id/kitDetails"
+        android:name="com.example.apteczka.content.kitDetails.KitDetailsFragment"
+        android:label="@string/label_kit_details"
+        tools:layout="@layout/fragment_kit_details">
+
+            <argument
+                android:name="kit_name"
+                android:defaultValue="null"
+                app:argType="string" />
+
+    </fragment>
+
+
 
 
 </navigation>

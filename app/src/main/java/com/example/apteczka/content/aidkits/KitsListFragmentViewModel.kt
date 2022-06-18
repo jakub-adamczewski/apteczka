@@ -1,6 +1,5 @@
 package com.example.apteczka.content.aidkits
 
-import android.icu.util.LocaleData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.apteczka.content.aidkits.KitsListFragmentContract.Effect
@@ -8,7 +7,6 @@ import com.example.apteczka.content.aidkits.KitsListFragmentContract.INITIAL_STA
 import com.example.apteczka.content.aidkits.KitsListFragmentContract.Intent
 import com.example.apteczka.content.aidkits.KitsListFragmentContract.State
 import com.example.apteczka.content.aidkits.list.KitAdapterItem
-import com.example.apteczka.content.kitDetails.KitDetailsFragmentContract
 import com.example.apteczka.data.CountState
 import com.example.apteczka.data.DateState
 import com.example.apteczka.data.PREDEFINED_ACCESSORIES
@@ -21,7 +19,6 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -58,7 +55,13 @@ class KitsListFragmentViewModel @Inject constructor(
             is Intent.OnItemClicked -> {
                 _effect.send(Effect.NavigateToDetails(intent.name))
             }
-            is Intent.AddKit -> cloudFirestore.addKit(intent.name)
+            is Intent.AddKit -> {
+                if (_state.value.items.none { it.name == intent.name }) {
+                    cloudFirestore.addKit(intent.name)
+                } else {
+                    _effect.send(Effect.Error(IllegalArgumentException("Apteczka o podanej nazwie już istnieje. Podaj inną nazwę.")))
+                }
+            }
         }
     }
 
